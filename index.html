@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Mosaic</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="toolbar" id="toolbar" aria-label="Tools">
+  <h1 class="wordmark">Pixel Mosaic</h1>
+  <!-- Tool controls land here: MOS-00004 (paint), MOS-00007 (select). -->
+</header>
+
+<main class="workspace">
+  <!-- The field renders into here as SVG/DOM, one <rect> per square. MOS-00003. -->
+  <div class="field" id="field" aria-label="Mosaic"></div>
+</main>
+
+<aside class="sidebar" id="sidebar" aria-label="Colours">
+  <!-- Colour sidebar: MOS-00008. Motion controls: MOS-00009. -->
+</aside>
+
+<script>
+/*
+ * The file:// guard. Deliberately a classic script and not a module.
+ *
+ * A browser refuses `import` over file:// — the module fetch is a cross-origin
+ * request from a null origin — so src/main.js never executes there. A guard
+ * living inside it therefore cannot fire in the one case it exists for, and
+ * the page renders as a near-blank shell. This script has to run where modules
+ * cannot, which is why it is inline and why it comes first.
+ */
+if (location.protocol === 'file:') {
+  document.documentElement.innerHTML =
+    '<head><meta charset="utf-8"><title>Pixel Mosaic</title>' +
+    '<link rel="stylesheet" href="styles.css"></head>' +
+    '<body><div class="unsupported">' +
+    '<h1>Pixel Mosaic needs to be served over http</h1>' +
+    '<p>This page was opened directly from the filesystem. Browsers refuse to ' +
+    'load JavaScript modules from <code>file://</code>, so the tool cannot start.</p>' +
+    '<p>Run a server from the project folder and open the address it prints:</p>' +
+    '<pre>make serve</pre>' +
+    '<p class="why">That is <code>python3 -m http.server</code> — any static ' +
+    'file server works, and there is no build step to run first.</p>' +
+    '</div></body>';
+}
+</script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

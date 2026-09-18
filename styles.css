@@ -1,0 +1,101 @@
+/*
+ * Layout and chrome only.
+ *
+ * No colour in this file ever reaches the artwork. Every colour a square
+ * renders comes from the document state (canvas.restFill, canvas.gapColor,
+ * content.cells) — see MOS-00001 decision 1 and spec §1: colours are
+ * free-form with no brand-locked palette anywhere. A swatch hard-coded here
+ * would be exactly the lock-in that decision rules out.
+ */
+
+:root {
+  --chrome-bg: #ffffff;
+  --chrome-fg: #16161a;
+  --chrome-line: #d7d7de;
+  --chrome-muted: #5c5c68;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chrome-bg: #16161a;
+    --chrome-fg: #f2f2f5;
+    --chrome-line: #34343c;
+    --chrome-muted: #a0a0ad;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "toolbar toolbar"
+    "workspace sidebar";
+  background: var(--chrome-bg);
+  color: var(--chrome-fg);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.toolbar {
+  grid-area: toolbar;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--chrome-line);
+}
+
+.wordmark { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+
+.workspace {
+  grid-area: workspace;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: auto;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  padding: 16px;
+  border-left: 1px solid var(--chrome-line);
+  overflow: auto;
+}
+
+/* The unsupported-protocol notice (src/main.js). Deliberately plain: it has to
+   render before anything else in the app has run. */
+.unsupported {
+  margin: 0 auto;
+  padding: 48px 24px;
+  max-width: 56ch;
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--chrome-fg);
+}
+
+.unsupported h1 { font-size: 20px; margin: 0 0 12px; }
+.unsupported code, .unsupported pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
+}
+.unsupported pre {
+  padding: 12px;
+  border: 1px solid var(--chrome-line);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.unsupported .why { color: var(--chrome-muted); font-size: 14px; }
+
+/* Narrow viewports: sidebar below the workspace rather than beside it. This is
+   chrome only — §8's narrow-viewport question for the *exported* field mode is
+   still open and belongs to MOS-00012. */
+@media (max-width: 720px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-areas: "toolbar" "workspace" "sidebar";
+  }
+  .sidebar { border-left: 0; border-top: 1px solid var(--chrome-line); }
+}
